@@ -26,7 +26,7 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(keyPressed)
+		EVENT_CLASS_TYPE(KeyPressed)
 	private:
 		int m_RepeatCount;
 	};
@@ -42,6 +42,6 @@ namespace Hazel {
 			return ss.str();
 		}
 
-		EVENT_CLASS_TYPE(KeyRealeased);
+		EVENT_CLASS_TYPE(KeyReleased);
 	};
 }
