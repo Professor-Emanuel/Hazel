@@ -8,3 +8,7 @@
 
 -spdlog : https://github.com/gabime/spdlog
 
+
+-glad : https://glad.dav1d.de/
+
+
