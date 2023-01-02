@@ -1,7 +1,9 @@
 workspace "Hazel"
 	architecture "x64"
+	startproject "Sandbox"
 
-	configurations{
+	configurations
+	{
 		"Debug",
 		"Release",
 		"Dist"
@@ -16,8 +18,8 @@ IncludeDir["Glad"] = "Hazel/vendor/Glad/include"
 IncludeDir["ImGui"] = "Hazel/vendor/imgui"
 
 include "Hazel/vendor/GLFW"
-include  "Hazel/vendor/Glad"
-include  "Hazel/vendor/imgui"
+include "Hazel/vendor/Glad"
+include "Hazel/vendor/imgui"
 
 project "Hazel"
 	location "Hazel"
@@ -30,12 +32,14 @@ project "Hazel"
 	pchheader "hzpch.h"
 	pchsource "Hazel/src/hzpch.cpp"
 
-	files{
+	files
+	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
 
-	includedirs{
+	includedirs
+	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
@@ -43,7 +47,8 @@ project "Hazel"
 		"%{IncludeDir.ImGui}"
 	}
 
-	links{
+	links 
+	{ 
 		"GLFW",
 		"Glad",
 		"ImGui",
@@ -55,14 +60,16 @@ project "Hazel"
 		staticruntime "On"
 		systemversion "latest"
 
-		defines{
+		defines
+		{
 			"HZ_PLATFORM_WINDOWS",
 			"HZ_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
 		}
 
-		postbuildcommands{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+		postbuildcommands
+		{
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
 		}
 
 	filter "configurations:Debug"
@@ -73,12 +80,12 @@ project "Hazel"
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
 		buildoptions "/MD"
-		symbols "On"
+		optimize "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
 		buildoptions "/MD"
-		symbols "On"
+		optimize "On"
 
 project "Sandbox"
 	location "Sandbox"
@@ -88,17 +95,20 @@ project "Sandbox"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files{
+	files
+	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
 
-	includedirs{
+	includedirs
+	{
 		"Hazel/vendor/spdlog/include",
 		"Hazel/src"
 	}
 
-	links{
+	links
+	{
 		"Hazel"
 	}
 
@@ -107,7 +117,8 @@ project "Sandbox"
 		staticruntime "On"
 		systemversion "latest"
 
-		defines{
+		defines
+		{
 			"HZ_PLATFORM_WINDOWS"
 		}
 
@@ -119,9 +130,9 @@ project "Sandbox"
 	filter "configurations:Release"
 		defines "HZ_RELEASE"
 		buildoptions "/MD"
-		symbols "On"
+		optimize "On"
 
 	filter "configurations:Dist"
 		defines "HZ_DIST"
 		buildoptions "/MD"
-		symbols "On"
+		optimize "On"
