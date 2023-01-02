@@ -1,21 +1,24 @@
 #include "hzpch.h"
 #include "ImGuiLayer.h"
-#include "Platform/OpenGL/ImGuiOpenGlRenderer.h"
-#include "GLFW/glfw3.h"
+
+#include "imgui.h"
+#include "Platform/OpenGL/ImGuiOpenGLRenderer.h"
+
 #include "Hazel/Application.h"
-//temporary
+
+// TEMPORARY
 #include <GLFW/glfw3.h>
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 namespace Hazel {
-	ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer")
-	{
 
+	ImGuiLayer::ImGuiLayer()
+		: Layer("ImGuiLayer")
+	{
 	}
 
 	ImGuiLayer::~ImGuiLayer()
 	{
-
 	}
 
 	void ImGuiLayer::OnAttach()
@@ -27,7 +30,7 @@ namespace Hazel {
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
-		//temporary: should eventually use Hazel key codes
+		// TEMPORARY: should eventually use Hazel key codes
 		io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
 		io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
 		io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
@@ -51,7 +54,6 @@ namespace Hazel {
 		io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 
 		ImGui_ImplOpenGL3_Init("#version 410");
-
 	}
 
 	void ImGuiLayer::OnDetach()
@@ -61,14 +63,12 @@ namespace Hazel {
 
 	void ImGuiLayer::OnUpdate()
 	{
-		
-
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2(app.GetWindow().GetWidth(), app.GetWindow().GetHeight());
 
 		float time = (float)glfwGetTime();
-		io.DeltaTime = m_Time > 0.0 ? (time - m_Time) : (1.0f / 60.0f);
+		io.DeltaTime = m_Time > 0.0f ? (time - m_Time) : (1.0f / 60.0f);
 		m_Time = time;
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -94,34 +94,41 @@ namespace Hazel {
 		dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(ImGuiLayer::OnWindowResizeEvent));
 	}
 
-	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e) {
+	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseDown[e.GetMouseButton()] = true;
 
 		return false;
 	}
 
-	bool ImGuiLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e) {
+	bool ImGuiLayer::OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.MouseDown[e.GetMouseButton()] = false;
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnMouseMovedEvent(MouseMovedEvent& e)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MousePos = ImVec2(e.GetX(), e.GetY());
 
 		return false;
 	}
 
-	bool ImGuiLayer::OnMouseMovedEvent(MouseMovedEvent& e) {
+	bool ImGuiLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.MouseWheelH += e.GetXOffset();
-		io.MouseWheel += e.GetYOffser();
+		io.MouseWheel += e.GetYOffset();
 
 		return false;
 	}
 
-	bool ImGuiLayer::OnMouseScrolledEvent(MouseScrolledEvent& e) {
-
-		return false;
-	}
-
-	bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e) {
+	bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = true;
 
@@ -132,13 +139,16 @@ namespace Hazel {
 		return false;
 	}
 
-	bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent& e) {
+	bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.KeysDown[e.GetKeyCode()] = false;
+
 		return false;
 	}
 
-	bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e) {
+	bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		int keycode = e.GetKeyCode();
 		if (keycode > 0 && keycode < 0x10000)
@@ -147,11 +157,13 @@ namespace Hazel {
 		return false;
 	}
 
-	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& e) {
+	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& e)
+	{
 		ImGuiIO& io = ImGui::GetIO();
 		io.DisplaySize = ImVec2(e.GetWidth(), e.GetHeight());
 		io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 		glViewport(0, 0, e.GetWidth(), e.GetHeight());
+
 		return false;
 	}
 
